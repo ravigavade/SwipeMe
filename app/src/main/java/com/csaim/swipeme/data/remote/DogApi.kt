@@ -9,5 +9,5 @@ object DogApi {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-
+    val dogServiceApi = retrofit.create(DogServiceApi::class.java)
 }

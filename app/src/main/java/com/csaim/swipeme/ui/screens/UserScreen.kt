@@ -1,7 +1,6 @@
-package com.csaim.swipeme.ui.theme
+package com.csaim.swipeme.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +13,9 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,47 +25,79 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.csaim.swipeme.viewModel.UserViewModel
+import com.csaim.swipeme.viewModel.CardViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 
 @Composable
-fun UserScreen(viewModel: UserViewModel = viewModel()) {
+fun UserScreen(viewModel: CardViewModel = viewModel()) {
 
-    val user by viewModel.user.collectAsState(initial = null)
+    val user by viewModel.user.collectAsState()
+    val dog by viewModel.dog.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.fetchUser()
+        viewModel.fetchCard()
     }
 
-    Card(
+    Column (
         modifier = Modifier
-            .padding(16.dp)
-            .fillMaxSize()
+//            .padding(16.dp)
+//            .fillMaxSize()
+            .background(Color.Gray)
             .statusBarsPadding()
     ) {
-        Column (
+        Card(
             modifier = Modifier
+                .weight(3f)
+                .fillMaxSize()
                 .padding(16.dp)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+
+        ) {
+
+            AsyncImage(
+                model = dog?.message,
+                contentDescription = "",
+                contentScale = ContentScale.FillHeight,
+                modifier = Modifier
+                    .fillMaxSize(),
+
+
+            )
+        }
+        Card  (
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+//                .weight(1f)
+                .padding(horizontal = 16.dp),
+//                .fillMaxSize(),
+//            horizontalAlignment = Alignment.CenterHorizontally,
 //            verticalArrangement = Arrangement.Center
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.tertiary
+
+            )
         ){
             Row (
                 modifier = Modifier
+                    .padding(16.dp)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ){
                 Card(
                     modifier = Modifier
-                        .clip(CircleShape)
+                        .clip(CircleShape),
+//                        .padding(23.dp)
+//                        .weight(1f)
+//                        .background(Color.Red),
+
 
                 ) {
                     AsyncImage(
                         modifier = Modifier
-                            .size(120.dp)
+                            .size(100.dp)
                         ,
                         model = user?.picture?.large,
                         contentDescription = "user?.picture?.large"
@@ -74,11 +108,12 @@ fun UserScreen(viewModel: UserViewModel = viewModel()) {
 
                Column(
                    modifier = Modifier
-                       .padding(16.dp),
+                       .weight(3f)
+                       .padding(horizontal = 16.dp),
                ) {
                    Text(
 
-                       text = "${user?.name?.title} ${user?.name?.first} ${user?.name?.last}",
+                       text = "Owner: ${user?.name?.title} ${user?.name?.first} ${user?.name?.last}",
                        fontSize = 18.sp
                    )
                    Spacer(modifier = Modifier.height(8.dp))
@@ -90,14 +125,18 @@ fun UserScreen(viewModel: UserViewModel = viewModel()) {
 
             }
 
+
+
+
+        }
             Button(
                 onClick = {
-                    viewModel.fetchUser()
+                    viewModel.fetchCard()
                 }
             ) {
                 Text("next user")
             }
-        }
+
     }
 
 
